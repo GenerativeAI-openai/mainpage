@@ -65,7 +65,7 @@
       <div class="card">
         <div class="field">
           <label for="customName">커스텀 링크 이름 (선택)</label>
-          <input type="text" id="customName" placeholder="예: my_album_2025"/>
+          <input type="text" id="customName" placeholder="예: 내_앨범_2025"/>
         </div>
         <div class="field">
           <label for="files">파일 선택 (이미지·오디오·동영상)</label>
@@ -123,7 +123,10 @@
       uploadBtn.addEventListener('click', async () => {
         if (!files.length) return;
         const raw = nameInput.value.trim();
-        const customName = raw ? raw.replace(/[^0-9a-zA-Z\-]/g,'_') : '';
+        // 한국어 허용: 한글 음절(uAC00–uD7A3) 포함
+        const customName = raw
+          ? raw.replace(/[^0-9a-zA-Z\uAC00-\uD7A3\-]/g, '_')
+          : '';
         uploadBtn.disabled = true;
         statusDiv.textContent = `업로드 중 (0/${files.length})`;
         linksDiv.innerHTML = '';
