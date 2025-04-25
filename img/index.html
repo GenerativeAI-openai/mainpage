@@ -3,71 +3,263 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>미디어 업로드</title>
+  <title>멀티 미디어 업로드 & 공유</title>
   <style>
-    body { font-family: sans-serif; background: #f5f5f5; display: flex; align-items: center; justify-content: center; height:100vh; margin:0 }
-    .card { background:#fff; padding:2rem; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:320px }
-    .card h1 { font-size:1.5rem; margin-bottom:1rem; text-align:center }
-    .file-input { margin-bottom:1rem; }
-    .file-input label { display:block; margin-bottom:0.5rem; }
-    .file-input input { width:100% }
-    .btn { width:100%; padding:0.75rem; border:none; background:#0070f3; color:#fff; font-size:1rem; border-radius:8px; cursor:pointer }
-    .btn:disabled { background:#999 }
-    .status { margin-top:1rem; font-size:0.9rem; color:#333; text-align:center }
+    /* 공통 스타일 */
+    body { margin:0; padding:1rem; font-family:sans-serif; background:#fafafa; }
+    .container { max-width:800px; margin:0 auto; }
+    h1 { text-align:center; margin-bottom:1rem; }
+
+    /* 업로드 카드 */
+    #upload-ui { display:none; }
+    .card {
+      background:#fff; padding:1.5rem; border-radius:8px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+    .field { margin-bottom:1rem; }
+    .field label { display:block; margin-bottom:0.3rem; font-weight:bold; }
+    .field input[type="text"],
+    .field input[type="file"] {
+      width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;
+    }
+    .btn {
+      width:100%; padding:0.75rem; background:#0070f3; color:#fff;
+      border:none; border-radius:6px; font-size:1rem; cursor:pointer;
+    }
+    .btn:disabled { background:#999; cursor:not-allowed; }
+    .status { margin-top:0.5rem; font-size:0.9rem; color:#333; }
+
+    /* 공유 미디어 그리드 */
+    #share-ui { display:none; }
+    .media-list {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:1rem;
+    }
+    .media-item {
+      width:100%; border:1px solid #ddd; border-radius:6px;
+      background:#fff;
+    }
+    .media-item video,
+    .media-item audio { width:100%; }
+
+    /* 우클릭 메뉴 */
+    .context-menu {
+      position:fixed; display:none; background:#fff;
+      border:1px solid #ccc; box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      border-radius:4px; z-index:1000; padding:0.25rem 0;
+    }
+    .context-menu.visible { display:block; }
+    .context-menu ul { margin:0; padding:0; list-style:none; }
+    .context-menu li {
+      padding:0.5rem 1.5rem; cursor:pointer; white-space:nowrap;
+    }
+    .context-menu li:hover { background:#f0f0f0; }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>미디어 업로드</h1>
-    <div class="file-input">
-      <label for="file">파일 선택</label>
-      <input type="file" id="file" accept="image/*,audio/*,video/*" />
+  <div class="container">
+    <h1 id="page-title"></h1>
+
+    <!-- 업로드 UI -->
+    <div id="upload-ui">
+      <div class="card">
+        <div class="field">
+          <label for="customName">커스텀 링크 이름 (선택)</label>
+          <input type="text" id="customName" placeholder="예: my_album_2025"/>
+        </div>
+        <div class="field">
+          <label for="files">파일 선택 (이미지·오디오·동영상)</label>
+          <input type="file" id="files" multiple accept="image/*,audio/*,video/*"/>
+        </div>
+        <button id="uploadBtn" class="btn" disabled>업로드 시작</button>
+        <div id="status" class="status"></div>
+        <div id="links" class="status"></div>
+      </div>
     </div>
-    <button id="uploadBtn" class="btn" disabled>업로드</button>
-    <div id="status" class="status"></div>
+
+    <!-- 공유 UI -->
+    <div id="share-ui">
+      <div class="media-list" id="media-list"></div>
+    </div>
   </div>
 
+  <!-- 우클릭 메뉴 (이미지 전용) -->
+  <nav id="context-menu" class="context-menu">
+    <ul>
+      <li data-action="copy">이미지 복사</li>
+      <li data-action="copy-link">이미지 링크 복사</li>
+      <li data-action="download">다운로드</li>
+      <li data-action="download-as">원하는 형식으로 다운로드</li>
+    </ul>
+  </nav>
+
   <script>
-    const fileInput = document.getElementById('file');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const statusDiv = document.getElementById('status');
-    let selectedFile;
+  (async () => {
+    const path = decodeURIComponent(location.pathname.slice(1));
+    const isRoot = path === '' || path === 'index.html';
+    const uploadUI = document.getElementById('upload-ui');
+    const shareUI  = document.getElementById('share-ui');
+    const titleEl  = document.getElementById('page-title');
 
-    fileInput.addEventListener('change', e => {
-      selectedFile = e.target.files[0];
-      uploadBtn.disabled = !selectedFile;
-      statusDiv.textContent = '';
-    });
+    if (isRoot) {
+      // —— 업로드 모드 —— 
+      titleEl.textContent = '멀티 미디어 업로드';
+      uploadUI.style.display = 'block';
 
-    uploadBtn.addEventListener('click', () => {
-      if (!selectedFile) return;
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const dataUrl = reader.result;
-        statusDiv.textContent = '업로드 중...';
-        try {
-          const res = await fetch('https://kkomaweb.com/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              data: dataUrl,
-              filename: `${Date.now()}_${selectedFile.name}`,
-              mimeType: selectedFile.type
-            })
+      const fileInput = document.getElementById('files');
+      const nameInput = document.getElementById('customName');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const statusDiv = document.getElementById('status');
+      const linksDiv  = document.getElementById('links');
+      let files = [];
+
+      fileInput.addEventListener('change', e => {
+        files = Array.from(e.target.files);
+        uploadBtn.disabled = files.length === 0;
+        statusDiv.textContent = '';
+        linksDiv.innerHTML = '';
+      });
+
+      uploadBtn.addEventListener('click', async () => {
+        if (!files.length) return;
+        const raw = nameInput.value.trim();
+        const customName = raw ? raw.replace(/[^0-9a-zA-Z\-]/g,'_') : '';
+        uploadBtn.disabled = true;
+        statusDiv.textContent = `업로드 중 (0/${files.length})`;
+        linksDiv.innerHTML = '';
+
+        const ids = [];
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const dataUrl = await new Promise((res,rej) => {
+            const r = new FileReader();
+            r.onload = ()=>res(r.result);
+            r.onerror=rej;
+            r.readAsDataURL(file);
           });
-          const json = await res.json();
-          if (json.url) {
-            statusDiv.innerHTML = `완료! <a href="${json.url}" target="_blank">미리보기</a>`;
-          } else {
-            throw new Error(json.error || 'Unknown');
+          try {
+            const resp = await fetch('https://kkomaweb.com/upload',{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body: JSON.stringify({
+                data: dataUrl,
+                filename: `${Date.now()}_${file.name}`,
+                mimeType: file.type,
+                customName
+              })
+            });
+            const j = await resp.json();
+            if (!j.url) throw '';
+            ids.push(j.url.split('/').pop());
+          } catch {
+            linksDiv.innerHTML += `<div>❌ ${file.name} 업로드 실패</div>`;
           }
-        } catch (err) {
-          console.error(err);
-          statusDiv.textContent = '업로드 실패';
+          statusDiv.textContent = `업로드 중 (${i+1}/${files.length})`;
         }
-      };
-      reader.readAsDataURL(selectedFile);
-    });
+
+        if (customName) {
+          linksDiv.innerHTML = `
+            ✅ 커스텀 링크:<br/>
+            <a href="https://kkomaweb.com/${customName}" target="_blank">
+              https://kkomaweb.com/${customName}
+            </a>`;
+        } else {
+          linksDiv.innerHTML = '🔗 기본 링크:<br/>';
+          ids.forEach(id => {
+            linksDiv.innerHTML += `
+              <a href="https://kkomaweb.com/${id}" target="_blank">
+                https://kkomaweb.com/${id}
+              </a><br/>`;
+          });
+        }
+        statusDiv.textContent = '완료!';
+        uploadBtn.disabled = false;
+      });
+
+    } else {
+      // —— 공유 모드 —— 
+      titleEl.textContent = '공유 미디어 보기';
+      shareUI.style.display = 'block';
+
+      // Firestore 매핑 조회
+      let items = [];
+      try {
+        const r = await fetch(`https://kkomaweb.com/api/links/${encodeURIComponent(path)}`);
+        if (r.ok) {
+          const { files } = await r.json();
+          items = files;
+        } else {
+          items = [{ filename: path, mimeType: '' }];
+        }
+      } catch {
+        items = [{ filename: path, mimeType: '' }];
+      }
+
+      const list = document.getElementById('media-list');
+      items.forEach(item => {
+        const ext = item.filename.split('.').pop().toLowerCase();
+        let el;
+        if (item.mimeType.startsWith('video') || ['mp4','webm','ogg'].includes(ext)) {
+          el = document.createElement('video');
+          el.controls = true;
+        } else if (item.mimeType.startsWith('audio') || ['mp3','wav','aac','ogg'].includes(ext)) {
+          el = document.createElement('audio');
+          el.controls = true;
+        } else {
+          el = document.createElement('img');
+        }
+        el.src = `https://kkomaweb.com/file/${item.filename}?raw=1`;
+        el.dataset.filename = item.filename;
+        el.classList.add('media-item');
+        list.appendChild(el);
+      });
+
+      // 우클릭 메뉴 바인딩 (이미지 전용)
+      const menu = document.getElementById('context-menu');
+      let targetImg = null;
+      list.addEventListener('contextmenu', e => {
+        if (e.target.tagName !== 'IMG') return;
+        e.preventDefault();
+        targetImg = e.target;
+        menu.style.top  = e.clientY + 'px';
+        menu.style.left = e.clientX + 'px';
+        menu.classList.add('visible');
+      });
+      document.addEventListener('click', () => menu.classList.remove('visible'));
+      menu.addEventListener('click', async e => {
+        const action = e.target.dataset.action;
+        const fname  = targetImg.dataset.filename;
+        const rawUrl = `https://kkomaweb.com/file/${fname}?raw=1`;
+        const dlBase = `https://kkomaweb.com/file/${fname}?download=1`;
+
+        if (action === 'copy') {
+          const blob = await fetch(rawUrl).then(r=>r.blob());
+          await navigator.clipboard.write([ new ClipboardItem({ [blob.type]: blob }) ]);
+        }
+        if (action === 'copy-link') {
+          await navigator.clipboard.writeText(rawUrl);
+        }
+        if (action === 'download') {
+          const a = document.createElement('a');
+          a.href = dlBase;
+          a.download = fname;
+          a.click();
+        }
+        if (action === 'download-as') {
+          const ext = prompt('확장자 입력 (예: png, jpg, webm, mp3 등):',
+                             fname.split('.').pop());
+          if (ext) {
+            const a = document.createElement('a');
+            a.href = dlBase + `&format=${encodeURIComponent(ext)}`;
+            a.download = `file.${ext}`;
+            a.click();
+          }
+        }
+        menu.classList.remove('visible');
+      });
+    }
+  })();
   </script>
 </body>
 </html>
