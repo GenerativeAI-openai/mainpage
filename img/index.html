@@ -138,7 +138,7 @@
             r.readAsDataURL(f);
           });
           try {
-            const resp = await fetch('https://kkomaweb.com/upload', {
+            const resp = await fetch('https://api.kkomaweb.com/upload', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -184,7 +184,7 @@
 
       let items = [];
       try {
-        const res = await fetch(`https://kkomaweb.com/api/links/${encodeURIComponent(key)}`);
+        const res = await fetch(`https://api.kkomaweb.com/api/links/${encodeURIComponent(key)}`);
         items = res.ok ? (await res.json()).files : [{ filename: key, mimeType: '' }];
       } catch {
         items = [{ filename: key, mimeType: '' }];
