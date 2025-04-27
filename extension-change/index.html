@@ -9,14 +9,14 @@
 <body>
   <div class="container">
     <h1>📂 빠른 파일 변환기</h1>
-    <div id="drop-area">
+    <div id="drop-area" onclick="document.getElementById('fileElem').click()">
       <p>여기로 파일을 드래그하거나 클릭해서 업로드하세요</p>
-      <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)">
-      <label class="button" for="fileElem">파일 선택</label>
+      <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)" style="display: none;">
     </div>
 
+    <div id="file-preview" class="hidden"></div>
+
     <div id="options" class="hidden">
-      <p id="filename"></p>
       <div class="select-wrapper">
         <label for="convertType">변환할 확장자 선택</label>
         <select id="convertType"></select>
