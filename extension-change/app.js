@@ -5,11 +5,17 @@ function handleFiles(files) {
   if (!uploadedFile) return;
 
   const filename = uploadedFile.name;
-  document.getElementById('filename').innerText = "선택된 파일: " + filename;
+  showFilePreview(filename);
   document.getElementById('options').classList.remove('hidden');
 
   const ext = getFileExtension(filename).toLowerCase();
   updateDropdown(ext);
+}
+
+function showFilePreview(filename) {
+  const preview = document.getElementById('file-preview');
+  preview.innerHTML = `선택한 파일: <strong>${filename}</strong>`;
+  preview.classList.remove('hidden');
 }
 
 function getFileExtension(filename) {
