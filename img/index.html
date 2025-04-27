@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>멀티 미디어 업로드 & 공유</title>
   <style>
     body { margin:0; padding:1rem; font-family:sans-serif; background:#fafafa }
     .container { max-width:800px; margin:0 auto }
     h1 { text-align:center; margin-bottom:1rem }
-
-    /* 업로드 UI */
     #upload-ui { display:none }
     .card {
       background:#fff; padding:1.5rem; border-radius:8px;
@@ -27,22 +25,14 @@
     }
     .btn:disabled { background:#999; cursor:not-allowed }
     .status { margin-top:0.5rem; font-size:0.9rem; color:#333 }
-
-    /* 공유 UI */
     #share-ui { display:none }
     .media-list {
       display:grid;
       grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
       gap:1rem;
     }
-    .media-item {
-      width:100%; border:1px solid #ddd; border-radius:6px;
-      background:#fff;
-    }
-    .media-item video,
-    .media-item audio { width:100% }
-
-    /* 우클릭 메뉴 */
+    .media-item { width:100%; border:1px solid #ddd; border-radius:6px; background:#fff }
+    .media-item video, .media-item audio { width:100% }
     .context-menu {
       position:fixed; display:none; background:#fff;
       border:1px solid #ccc; box-shadow:0 2px 6px rgba(0,0,0,0.2);
@@ -56,6 +46,7 @@
     .context-menu li:hover { background:#f0f0f0 }
   </style>
 </head>
+<body>
 <body>
   <div class="container">
     <h1 id="page-title"></h1>
@@ -83,7 +74,7 @@
     </div>
   </div>
 
-  <!-- 우클릭 메뉴 (이미지 전용) -->
+  <!-- 우클릭 메뉴 -->
   <nav id="context-menu" class="context-menu">
     <ul>
       <li data-action="copy">이미지 복사</li>
@@ -93,16 +84,23 @@
     </ul>
   </nav>
 
-  <script>
-  (async () => {
+  <script type="module">
+    // firebase-config.js에서 설정 가져오기
+    import firebaseConfig from './firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const BASE = '/img';
-    const path = location.pathname.replace(/\/+$/,'');
+    const path = location.pathname.replace(/\/+$/, '');
     const uploadUI = document.getElementById('upload-ui');
-    const shareUI  = document.getElementById('share-ui');
-    const titleEl  = document.getElementById('page-title');
+    const shareUI = document.getElementById('share-ui');
+    const titleEl = document.getElementById('page-title');
 
     if (path === BASE) {
-      // —— 업로드 모드 —— 
+      // —— 업로드 모드 ——
       titleEl.textContent = '멀티 미디어 업로드';
       uploadUI.style.display = 'block';
 
@@ -110,7 +108,7 @@
       const nameInput = document.getElementById('customName');
       const uploadBtn = document.getElementById('uploadBtn');
       const statusDiv = document.getElementById('status');
-      const linksDiv  = document.getElementById('links');
+      const linksDiv = document.getElementById('links');
       let files = [];
 
       fileInput.addEventListener('change', e => {
@@ -123,7 +121,6 @@
       uploadBtn.addEventListener('click', async () => {
         if (!files.length) return;
         const raw = nameInput.value.trim();
-        // 한국어 허용: 한글 음절(uAC00–uD7A3) 포함
         const customName = raw
           ? raw.replace(/[^0-9a-zA-Z\uAC00-\uD7A3\-]/g, '_')
           : '';
@@ -132,33 +129,37 @@
         linksDiv.innerHTML = '';
 
         const ids = [];
+        const uploadInfos = [];
+
         for (let i = 0; i < files.length; i++) {
           const f = files[i];
-          const dataUrl = await new Promise((res,rej) => {
-            const r = new FileReader();
-            r.onload = () => res(r.result);
-            r.onerror = rej;
-            r.readAsDataURL(f);
-          });
+          const filename = `${Date.now()}_${f.name}`;
           try {
-            const resp = await fetch('https://api.kkomaweb.com/upload', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                data: dataUrl,
-                filename: `${Date.now()}_${f.name}`,
-                mimeType: f.type,
-                customName
-              })
+            const dataUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(f);
             });
-            const j = await resp.json();
-            if (!j.url) throw '';
-            ids.push(j.url.split('/').pop());
-          } catch {
+            uploadInfos.push({
+              filename,
+              mimeType: f.type,
+              dataUrl,
+              uploadedAt: Date.now()
+            });
+            ids.push(customName || filename);
+            linksDiv.innerHTML += `<div>✅ ${f.name} 준비 완료</div>`;
+          } catch (err) {
             linksDiv.innerHTML += `<div>❌ ${f.name} 업로드 실패</div>`;
           }
-          statusDiv.textContent = `업로드 중 (${i+1}/${files.length})`;
+          statusDiv.textContent = `업로드 중 (${i + 1}/${files.length})`;
         }
+
+        const docKey = customName || ids[0];
+        await setDoc(doc(db, 'uploads', docKey), {
+          files: uploadInfos,
+          createdAt: Date.now()
+        });
 
         if (customName) {
           linksDiv.innerHTML = `
@@ -175,82 +176,92 @@
               </a><br/>`;
           });
         }
+
         statusDiv.textContent = '완료!';
         uploadBtn.disabled = false;
       });
 
     } else if (path.startsWith(BASE + '/')) {
-      // —— 공유 모드 —— 
+      // —— 공유 보기 모드 ——
       const key = decodeURIComponent(path.slice((BASE + '/').length));
       titleEl.textContent = '공유 미디어 보기';
       shareUI.style.display = 'block';
 
       let items = [];
       try {
-        const res = await fetch(`https://api.kkomaweb.com/api/links/${encodeURIComponent(key)}`);
-        items = res.ok ? (await res.json()).files : [{ filename: key, mimeType: '' }];
-      } catch {
-        items = [{ filename: key, mimeType: '' }];
+        const docSnap = await getDoc(doc(db, 'uploads', key));
+        if (docSnap.exists()) {
+          items = docSnap.data().files || [];
+        } else {
+          items = [];
+        }
+      } catch (e) {
+        items = [];
       }
 
       const list = document.getElementById('media-list');
+      if (!items.length) {
+        list.innerHTML = '<div>❌ 파일을 찾을 수 없습니다.</div>';
+        return;
+      }
+
       items.forEach(item => {
         const ext = item.filename.split('.').pop().toLowerCase();
         let el;
-        if (item.mimeType.startsWith('video') || ['mp4','webm','ogg'].includes(ext)) {
+        if (item.mimeType.startsWith('video') || ['mp4', 'webm', 'ogg'].includes(ext)) {
           el = document.createElement('video'); el.controls = true;
-        } else if (item.mimeType.startsWith('audio') || ['mp3','wav','aac','ogg'].includes(ext)) {
+        } else if (item.mimeType.startsWith('audio') || ['mp3', 'wav', 'aac', 'ogg'].includes(ext)) {
           el = document.createElement('audio'); el.controls = true;
         } else {
           el = document.createElement('img');
         }
-        el.src = `https://kkomaweb.com/file/${item.filename}?raw=1`;
+        el.src = item.dataUrl;
         el.dataset.filename = item.filename;
         el.classList.add('media-item');
         list.appendChild(el);
       });
 
-      // 우클릭 메뉴 (이미지 전용)
+      // —— 우클릭 메뉴 —— 
       const menu = document.getElementById('context-menu');
       let targetImg = null;
       list.addEventListener('contextmenu', e => {
         if (e.target.tagName !== 'IMG') return;
         e.preventDefault();
         targetImg = e.target;
-        menu.style.top  = e.clientY + 'px';
+        menu.style.top = e.clientY + 'px';
         menu.style.left = e.clientX + 'px';
         menu.classList.add('visible');
       });
       document.addEventListener('click', () => menu.classList.remove('visible'));
       menu.addEventListener('click', async e => {
         const action = e.target.dataset.action;
-        const fn = targetImg.dataset.filename;
-        const rawUrl = `https://kkomaweb.com/file/${fn}?raw=1`;
-        const dlBase = `https://kkomaweb.com/file/${fn}?download=1`;
-
+        if (!targetImg) return;
+        const rawUrl = targetImg.src;
         if (action === 'copy') {
-          const blob = await fetch(rawUrl).then(r=>r.blob());
-          await navigator.clipboard.write([ new ClipboardItem({ [blob.type]: blob }) ]);
+          const blob = await fetch(rawUrl).then(r => r.blob());
+          await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
         }
         if (action === 'copy-link') {
           await navigator.clipboard.writeText(rawUrl);
         }
         if (action === 'download') {
           const a = document.createElement('a');
-          a.href = dlBase; a.download = fn; a.click();
+          a.href = rawUrl;
+          a.download = targetImg.dataset.filename;
+          a.click();
         }
         if (action === 'download-as') {
-          const ext = prompt('확장자 입력 (png, jpg, mp4, mp3 등):', fn.split('.').pop());
+          const ext = prompt('확장자 입력 (png, jpg, mp4, mp3 등):', targetImg.dataset.filename.split('.').pop());
           if (ext) {
             const a = document.createElement('a');
-            a.href = dlBase + `&format=${encodeURIComponent(ext)}`;
-            a.download = `file.${ext}`; a.click();
+            a.href = rawUrl;
+            a.download = `file.${ext}`;
+            a.click();
           }
         }
         menu.classList.remove('visible');
       });
     }
-  })();
   </script>
 </body>
 </html>
