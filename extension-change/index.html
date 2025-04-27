@@ -17,13 +17,11 @@
 
     <div id="options" class="hidden">
       <p id="filename"></p>
-      <select id="convertType">
-        <option value="jpg2png">JPG → PNG</option>
-        <option value="png2jpg">PNG → JPG</option>
-        <option value="mp4gif">MP4 → GIF (지원 예정)</option>
-        <option value="pdfdocx">PDF → DOCX (지원 예정)</option>
-      </select>
-      <button onclick="convertFile()">변환 시작</button>
+      <div class="select-wrapper">
+        <label for="convertType">변환할 확장자 선택</label>
+        <select id="convertType"></select>
+      </div>
+      <button class="convert-btn" onclick="convertFile()">변환 시작</button>
     </div>
 
     <div id="progress" class="hidden">
@@ -31,12 +29,7 @@
     </div>
 
     <div id="download" class="hidden">
-      <a id="downloadLink" href="#" download>다운로드</a>
-      <div class="sns-buttons">
-        <button onclick="shareSNS('kakao')">카카오톡</button>
-        <button onclick="shareSNS('twitter')">트위터</button>
-        <button onclick="shareSNS('facebook')">페이스북</button>
-      </div>
+      <a id="downloadLink" class="button" href="#" download>다운로드</a>
     </div>
   </div>
 
