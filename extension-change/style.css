@@ -1,0 +1,64 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+#drop-area {
+  border: 2px dashed #aaa;
+  padding: 30px;
+  border-radius: 12px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+#drop-area p {
+  margin: 0 0 10px;
+}
+
+.button {
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+#options, #download {
+  margin-top: 20px;
+}
+
+.sns-buttons button {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  background: #495057;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sns-buttons button:hover {
+  background: #343a40;
+}
