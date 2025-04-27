@@ -2,27 +2,59 @@ let uploadedFile = null;
 
 function handleFiles(files) {
   uploadedFile = files[0];
-  document.getElementById('filename').innerText = "선택된 파일: " + uploadedFile.name;
+  const filename = uploadedFile.name;
+  document.getElementById('filename').innerText = "선택된 파일: " + filename;
   document.getElementById('options').classList.remove('hidden');
+
+  const ext = getFileExtension(filename).toLowerCase();
+  updateDropdown(ext);
+}
+
+function getFileExtension(filename) {
+  return filename.split('.').pop();
+}
+
+function updateDropdown(ext) {
+  const dropdown = document.getElementById('convertType');
+  dropdown.innerHTML = '';
+
+  if (ext === 'jpg' || ext === 'jpeg') {
+    addOption(dropdown, 'png', 'PNG');
+    addOption(dropdown, 'webp', 'WEBP');
+  } else if (ext === 'png') {
+    addOption(dropdown, 'jpg', 'JPG');
+    addOption(dropdown, 'webp', 'WEBP');
+  } else if (ext === 'webp') {
+    addOption(dropdown, 'jpg', 'JPG');
+    addOption(dropdown, 'png', 'PNG');
+  } else {
+    const option = document.createElement('option');
+    option.value = '';
+    option.text = '지원되지 않는 파일 형식';
+    dropdown.appendChild(option);
+  }
+}
+
+function addOption(dropdown, value, label) {
+  const option = document.createElement('option');
+  option.value = value;
+  option.text = label;
+  dropdown.appendChild(option);
 }
 
 function convertFile() {
   if (!uploadedFile) return;
-  
-  const type = document.getElementById('convertType').value;
+
+  const targetExt = document.getElementById('convertType').value;
+  if (!targetExt) {
+    alert("변환할 확장자를 선택하세요.");
+    return;
+  }
+
   document.getElementById('progress').classList.remove('hidden');
 
-  if (type === 'jpg2png' || type === 'png2jpg') {
-    convertImage(uploadedFile, type);
-  } else {
-    alert("이 변환은 곧 지원됩니다!");
-    document.getElementById('progress').classList.add('hidden');
-  }
-}
-
-function convertImage(file, type) {
   const reader = new FileReader();
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(uploadedFile);
 
   reader.onload = function (e) {
     const img = new Image();
@@ -34,26 +66,23 @@ function convertImage(file, type) {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
 
-      let format = (type === 'jpg2png') ? 'image/png' : 'image/jpeg';
+      let format = '';
+      if (targetExt === 'png') format = 'image/png';
+      else if (targetExt === 'jpg') format = 'image/jpeg';
+      else if (targetExt === 'webp') format = 'image/webp';
+      else {
+        alert('지원되지 않는 변환입니다.');
+        return;
+      }
+
       canvas.toBlob(function(blob) {
         const url = URL.createObjectURL(blob);
         const downloadLink = document.getElementById('downloadLink');
         downloadLink.href = url;
-        downloadLink.download = 'converted.' + (type === 'jpg2png' ? 'png' : 'jpg');
+        downloadLink.download = `converted.${targetExt}`;
         document.getElementById('download').classList.remove('hidden');
         document.getElementById('progress').classList.add('hidden');
       }, format);
     };
   };
-}
-
-function shareSNS(platform) {
-  const url = location.href;
-  if (platform === 'kakao') {
-    window.open(`https://story.kakao.com/share?url=${encodeURIComponent(url)}`);
-  } else if (platform === 'twitter') {
-    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=빠른 파일 변환기!`);
-  } else if (platform === 'facebook') {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
-  }
 }
