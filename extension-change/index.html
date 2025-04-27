@@ -10,8 +10,8 @@
   <div class="container">
     <h1>📂 빠른 파일 변환기</h1>
     <div id="drop-area">
-      <p>파일을 드래그하거나 클릭해서 업로드하세요.</p>
-      <input type="file" id="fileElem" accept="*/*" onchange="handleFiles(this.files)">
+      <p>여기로 파일을 드래그하거나 클릭해서 업로드하세요</p>
+      <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)">
       <label class="button" for="fileElem">파일 선택</label>
     </div>
 
@@ -25,7 +25,7 @@
     </div>
 
     <div id="progress" class="hidden">
-      <p>진행 중...</p>
+      <p>변환 진행 중...</p>
     </div>
 
     <div id="download" class="hidden">
