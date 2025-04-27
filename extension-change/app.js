@@ -2,6 +2,8 @@ let uploadedFile = null;
 
 function handleFiles(files) {
   uploadedFile = files[0];
+  if (!uploadedFile) return;
+
   const filename = uploadedFile.name;
   document.getElementById('filename').innerText = "선택된 파일: " + filename;
   document.getElementById('options').classList.remove('hidden');
@@ -11,27 +13,29 @@ function handleFiles(files) {
 }
 
 function getFileExtension(filename) {
-  return filename.split('.').pop();
+  const parts = filename.split('.');
+  return parts.length > 1 ? parts.pop() : '';
 }
 
 function updateDropdown(ext) {
   const dropdown = document.getElementById('convertType');
   dropdown.innerHTML = '';
 
-  if (ext === 'jpg' || ext === 'jpeg') {
-    addOption(dropdown, 'png', 'PNG');
-    addOption(dropdown, 'webp', 'WEBP');
-  } else if (ext === 'png') {
-    addOption(dropdown, 'jpg', 'JPG');
-    addOption(dropdown, 'webp', 'WEBP');
-  } else if (ext === 'webp') {
-    addOption(dropdown, 'jpg', 'JPG');
-    addOption(dropdown, 'png', 'PNG');
+  const formats = {
+    jpg: ['png', 'webp'],
+    jpeg: ['png', 'webp'],
+    png: ['jpg', 'webp'],
+    webp: ['jpg', 'png']
+  };
+
+  const available = formats[ext];
+  
+  if (available) {
+    available.forEach(target => {
+      addOption(dropdown, target, target.toUpperCase());
+    });
   } else {
-    const option = document.createElement('option');
-    option.value = '';
-    option.text = '지원되지 않는 파일 형식';
-    dropdown.appendChild(option);
+    addOption(dropdown, '', '지원되지 않는 파일 형식');
   }
 }
 
@@ -66,7 +70,7 @@ function convertFile() {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
 
-      let format = '';
+      let format;
       if (targetExt === 'png') format = 'image/png';
       else if (targetExt === 'jpg') format = 'image/jpeg';
       else if (targetExt === 'webp') format = 'image/webp';
