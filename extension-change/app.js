@@ -27,16 +27,21 @@ function updateDropdown(ext) {
   const dropdown = document.getElementById('convertType');
   dropdown.innerHTML = '';
 
-  const formats = {
-    jpg: ['png', 'webp'],
-    jpeg: ['png', 'webp'],
-    png: ['jpg', 'webp'],
-    webp: ['jpg', 'png']
-  };
+  const imageFormats = ['jpg', 'jpeg', 'png', 'webp', 'bmp'];
+  const docFormats = ['pdf', 'doc', 'docx', 'txt'];
+  const videoFormats = ['mp4', 'webm', 'avi'];
 
-  const available = formats[ext];
-  
-  if (available) {
+  let available = [];
+
+  if (imageFormats.includes(ext)) {
+    available = imageFormats.filter(f => f !== ext); // 자기 자신 제외
+  } else if (docFormats.includes(ext)) {
+    available = docFormats.filter(f => f !== ext);
+  } else if (videoFormats.includes(ext)) {
+    available = videoFormats.filter(f => f !== ext);
+  }
+
+  if (available.length > 0) {
     available.forEach(target => {
       addOption(dropdown, target, target.toUpperCase());
     });
@@ -61,38 +66,51 @@ function convertFile() {
     return;
   }
 
-  document.getElementById('progress').classList.remove('hidden');
-
   const reader = new FileReader();
   reader.readAsDataURL(uploadedFile);
 
+  document.getElementById('progress').classList.remove('hidden');
+
   reader.onload = function (e) {
-    const img = new Image();
-    img.src = e.target.result;
-    img.onload = function () {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
+    const ext = getFileExtension(uploadedFile.name).toLowerCase();
+    const imgExts = ['jpg', 'jpeg', 'png', 'webp', 'bmp'];
 
-      let format;
-      if (targetExt === 'png') format = 'image/png';
-      else if (targetExt === 'jpg') format = 'image/jpeg';
-      else if (targetExt === 'webp') format = 'image/webp';
-      else {
-        alert('지원되지 않는 변환입니다.');
-        return;
-      }
+    if (imgExts.includes(ext) && imgExts.includes(targetExt)) {
+      convertImage(e.target.result, targetExt);
+    } else {
+      alert('현재는 이미지 파일만 브라우저에서 직접 변환할 수 있습니다. (문서, 영상 변환은 추후 지원)');
+      document.getElementById('progress').classList.add('hidden');
+    }
+  };
+}
 
-      canvas.toBlob(function(blob) {
-        const url = URL.createObjectURL(blob);
-        const downloadLink = document.getElementById('downloadLink');
-        downloadLink.href = url;
-        downloadLink.download = `converted.${targetExt}`;
-        document.getElementById('download').classList.remove('hidden');
-        document.getElementById('progress').classList.add('hidden');
-      }, format);
-    };
+function convertImage(dataURL, targetExt) {
+  const img = new Image();
+  img.src = dataURL;
+  img.onload = function () {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+
+    let format;
+    if (targetExt === 'png') format = 'image/png';
+    else if (targetExt === 'jpg' || targetExt === 'jpeg') format = 'image/jpeg';
+    else if (targetExt === 'webp') format = 'image/webp';
+    else if (targetExt === 'bmp') format = 'image/bmp';
+    else {
+      alert('지원되지 않는 변환입니다.');
+      return;
+    }
+
+    canvas.toBlob(function(blob) {
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.getElementById('downloadLink');
+      downloadLink.href = url;
+      downloadLink.download = `converted.${targetExt}`;
+      document.getElementById('download').classList.remove('hidden');
+      document.getElementById('progress').classList.add('hidden');
+    }, format);
   };
 }
