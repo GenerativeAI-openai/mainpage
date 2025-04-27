@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>빠른 파일 변환기</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📂 빠른 파일 변환기</h1>
+    <div id="drop-area">
+      <p>파일을 드래그하거나 클릭해서 업로드하세요.</p>
+      <input type="file" id="fileElem" accept="*/*" onchange="handleFiles(this.files)">
+      <label class="button" for="fileElem">파일 선택</label>
+    </div>
+
+    <div id="options" class="hidden">
+      <p id="filename"></p>
+      <select id="convertType">
+        <option value="jpg2png">JPG → PNG</option>
+        <option value="png2jpg">PNG → JPG</option>
+        <option value="mp4gif">MP4 → GIF (지원 예정)</option>
+        <option value="pdfdocx">PDF → DOCX (지원 예정)</option>
+      </select>
+      <button onclick="convertFile()">변환 시작</button>
+    </div>
+
+    <div id="progress" class="hidden">
+      <p>진행 중...</p>
+    </div>
+
+    <div id="download" class="hidden">
+      <a id="downloadLink" href="#" download>다운로드</a>
+      <div class="sns-buttons">
+        <button onclick="shareSNS('kakao')">카카오톡</button>
+        <button onclick="shareSNS('twitter')">트위터</button>
+        <button onclick="shareSNS('facebook')">페이스북</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
