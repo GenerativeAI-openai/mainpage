@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload</title>
+    <title>이미지 업로드</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,15 +80,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Image Upload</h1>
+        <h1>이미지 업로드</h1>
         <form id="uploadForm">
             <input type="file" id="fileInput" name="fileInput" accept="image/*" required>
-            <button type="button" id="uploadButton">Upload</button>
+            <button type="button" id="uploadButton">업로드드</button>
         </form>
         <div class="message" id="message"></div>
         <div class="link-container" id="linkContainer" style="display: none;">
             <a id="imageLink" href="#" target="_blank">이미지 바로가기</a>
-            <button class="copy-button" id="copyButton">Copy Link</button>
+            <button class="copy-button" id="copyButton">링크 복사</button>
         </div>
     </div>
 
@@ -101,7 +101,7 @@
             const copyButton = document.getElementById('copyButton');
             
             if (fileInput.files.length === 0) {
-                messageDiv.textContent = "Please select an image to upload.";
+                messageDiv.textContent = "파일을 선택해주세요";
                 messageDiv.style.color = "red";
                 return;
             }
@@ -111,7 +111,7 @@
             formData.append('image', file);
 
             try {
-                messageDiv.textContent = "Uploading...";
+                messageDiv.textContent = "업로드 중...";
                 messageDiv.style.color = "black";
                 linkContainer.style.display = "none";
 
@@ -121,19 +121,19 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Upload failed with status ${response.status}`);
+                    throw new Error(`Status ${response.status}로 업로드 실패`);
                 }
 
                 const result = await response.json();
-                const dataLink = result.data?.url || "No link provided in response.";
+                const dataLink = result.data?.url || "Error: 응답에 링크 포함되지 않음";
 
                 if (result.data?.url) {
                     imageLink.href = result.data.url;
-                    imageLink.textContent = "View Uploaded Image";
+                    imageLink.textContent = ">이미지 바로가기";
                     linkContainer.style.display = "block";
                 }
 
-                messageDiv.textContent = "Upload successful!";
+                messageDiv.textContent = "업로드가 성공적으로 완료되았습니다";
                 messageDiv.style.color = "green";
 
                 copyButton.addEventListener('click', () => {
@@ -143,7 +143,7 @@
                 });
             } catch (error) {
                 console.error(error);
-                messageDiv.textContent = "Error uploading image. Please try again.";
+                messageDiv.textContent = `Error: ${error}`;
                 messageDiv.style.color = "red";
             }
         });
