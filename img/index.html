@@ -133,7 +133,7 @@
       const result = await res.json();
       const url = result.data.url; // e.g. https://i.ibb.co/C5x1rm6z/profile-img-1.png
       // id, name 추출
-      const [, , id, name] = url.split('/');
+      const [, , , id, name] = url.split('/');
       const shareUrl = `${window.location.origin}${window.location.pathname}?id=${id}&name=${name}`;
 
       // 링크 설정
