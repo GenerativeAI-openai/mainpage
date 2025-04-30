@@ -1,153 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://i.ibb.co/hJx83Zhy/profile-img.png" type="image/png">
-    <title>이미지 업로드</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-        }
-        input[type="file"] {
-            display: block;
-            margin: 20px auto;
-            width: 90%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-        }
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .message {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .link-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .link-container a {
-            display: inline-block;
-            margin: 10px auto;
-            padding: 10px;
-            background-color: #e7f5ff;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
-        }
-        .link-container a:hover {
-            background-color: #d0e7ff;
-        }
-        .copy-button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .copy-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="https://i.ibb.co/hJx83Zhy/profile-img.png" type="image/png"/>
+  <title>이미지 업로드</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:20px; background-color:#f4f4f9; }
+    .container {
+      max-width:600px; margin:0 auto; padding:20px;
+      background:#fff; border-radius:10px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 { text-align:center; }
+    input[type="file"] {
+      display:block; margin:20px auto; width:90%;
+      padding:10px; border-radius:10px; border:1px solid #ccc;
+    }
+    button {
+      display:block; margin:20px auto;
+      padding:10px 20px; background-color:#007bff;
+      color:white; border:none; border-radius:5px;
+      cursor:pointer;
+    }
+    button:hover { background-color:#0056b3; }
+    .message { text-align:center; margin-top:20px; }
+    .link-container { text-align:center; margin-top:20px; }
+    .link-container a {
+      display:inline-block; margin:10px auto; padding:10px;
+      background-color:#e7f5ff; border-radius:10px;
+      text-decoration:none; color:#007bff; font-weight:bold;
+    }
+    .link-container a:hover { background-color:#d0e7ff; }
+    .copy-button {
+      display:block; margin:10px auto; padding:10px 20px;
+      background-color:#007bff; color:white;
+      border:none; border-radius:5px; cursor:pointer;
+    }
+    .copy-button:hover { background-color:#0056b3; }
+    /* 컨텍스트 메뉴 스타일 */
+    .context-menu {
+      position:absolute; background:#fff;
+      border:1px solid #ccc; border-radius:5px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.2);
+      z-index:1000;
+    }
+    .context-menu-item {
+      padding:8px 12px; cursor:pointer;
+      white-space:nowrap;
+    }
+    .context-menu-item:hover {
+      background:#f0f0f0;
+    }
+    /* 형식 선택 드롭다운 */
+    .format-dropdown {
+      position:absolute; background:#fff;
+      border:1px solid #ccc; border-radius:5px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.2);
+      z-index:1001;
+    }
+    .format-item {
+      padding:6px 10px; cursor:pointer;
+      white-space:nowrap;
+    }
+    .format-item:hover {
+      background:#f0f0f0;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>이미지 업로드</h1>
-        <form id="uploadForm">
-            <input type="file" id="fileInput" name="fileInput" accept="image/*" required>
-            <button type="button" id="uploadButton">업로드</button>
-        </form>
-        <div class="message" id="message"></div>
-        <div class="link-container" id="linkContainer" style="display: none;">
-            <a id="imageLink" href="#" target="_blank">이미지 바로가기</a>
-            <button class="copy-button" id="copyButton">링크 복사</button>
-        </div>
+  <!-- 업로드 폼 -->
+  <div class="container" id="uploadContainer">
+    <h1>이미지 업로드</h1>
+    <form id="uploadForm">
+      <input type="file" id="fileInput" name="fileInput" accept="image/*" required />
+      <button type="button" id="uploadButton">업로드</button>
+    </form>
+    <div class="message" id="message"></div>
+    <div class="link-container" id="linkContainer" style="display:none;">
+      <a id="imageLink" href="#" target="_blank">이미지 바로가기</a>
+      <button class="copy-button" id="copyButton">이미지 링크 복사</button>
     </div>
+  </div>
 
-    <script>
-        document.getElementById('uploadButton').addEventListener('click', async () => {
-            const fileInput = document.getElementById('fileInput');
-            const messageDiv = document.getElementById('message');
-            const linkContainer = document.getElementById('linkContainer');
-            const imageLink = document.getElementById('imageLink');
-            const copyButton = document.getElementById('copyButton');
-            
-            if (fileInput.files.length === 0) {
-                messageDiv.textContent = "파일을 선택해주세요";
-                messageDiv.style.color = "red";
-                return;
-            }
+  <!-- 공유 링크 접속 시 이미지 뷰 -->
+  <div class="container" id="displayContainer" style="display:none;">
+    <h1>이미지</h1>
+    <img id="displayImage" src="" alt="Uploaded Image" style="max-width:100%; border-radius:10px;" />
+  </div>
 
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('image', file);
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id'), name = params.get('name');
+    if (id && name) {
+      // 공유 링크 모드
+      document.getElementById('uploadContainer').style.display = 'none';
+      const displayImg = document.getElementById('displayImage');
+      const imageUrl = `https://i.ibb.co/${id}/${name}`;
+      displayImg.src = imageUrl;
+      document.getElementById('displayContainer').style.display = 'block';
+      setupContextMenu(displayImg, imageUrl, name);
+    }
+  });
 
-            try {
-                messageDiv.textContent = "업로드 중...";
-                messageDiv.style.color = "black";
-                linkContainer.style.display = "none";
+  // 업로드 처리
+  document.getElementById('uploadButton').addEventListener('click', async () => {
+    const fileInput = document.getElementById('fileInput');
+    const messageDiv = document.getElementById('message');
+    const linkContainer = document.getElementById('linkContainer');
+    const imageLink = document.getElementById('imageLink');
+    const copyButton = document.getElementById('copyButton');
 
-                const response = await fetch('https://api.imgbb.com/1/upload?key=03ecaa75934206c013c19cb81890da15', {
-                    method: 'POST',
-                    body: formData
-                });
+    if (!fileInput.files.length) {
+      messageDiv.textContent = "파일을 선택해주세요";
+      messageDiv.style.color = "red";
+      return;
+    }
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
 
-                if (!response.ok) {
-                    throw new Error(`Status ${response.status}로 업로드 실패`);
-                }
+    try {
+      messageDiv.textContent = "업로드 중...";
+      messageDiv.style.color = "black";
+      linkContainer.style.display = "none";
 
-                const result = await response.json();
-                const dataLink = result.data?.url || "Error: 응답에 링크 포함되지 않음";
+      const res = await fetch('https://api.imgbb.com/1/upload?key=03ecaa75934206c013c19cb81890da15', {
+        method:'POST', body: formData
+      });
+      if (!res.ok) throw new Error(`Status ${res.status}로 업로드 실패`);
+      const result = await res.json();
+      const url = result.data.url; // e.g. https://i.ibb.co/C5x1rm6z/profile-img-1.png
+      // id, name 추출
+      const [, , id, name] = url.split('/');
+      const shareUrl = `${window.location.origin}${window.location.pathname}?id=${id}&name=${name}`;
 
-                if (result.data?.url) {
-                    imageLink.href = result.data.url;
-                    imageLink.textContent = ">이미지 바로가기";
-                    linkContainer.style.display = "block";
-                }
-
-                messageDiv.textContent = "업로드가 성공적으로 완료되았습니다";
-                messageDiv.style.color = "green";
-
-                copyButton.addEventListener('click', () => {
-                   navigator.clipboard.writeText(result.data.url).then(() => {
-                       alert('Link copied to clipboard!');
-                    });
-                });
-            } catch (error) {
-                console.error(error);
-                messageDiv.textContent = `Error: ${error}`;
-                messageDiv.style.color = "red";
-            }
+      // 링크 설정
+      imageLink.href = shareUrl;
+      imageLink.textContent = "이미지 바로가기";
+      copyButton.textContent = "공유 링크 복사";
+      copyButton.onclick = () => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          alert('공유 링크가 복사되었습니다!');
         });
-    </script>
+      };
+
+      linkContainer.style.display = 'block';
+      messageDiv.textContent = "업로드가 성공적으로 완료되었습니다";
+      messageDiv.style.color = "green";
+    } catch (err) {
+      console.error(err);
+      messageDiv.textContent = `Error: ${err.message}`;
+      messageDiv.style.color = "red";
+    }
+  });
+
+  // 컨텍스트 메뉴 생성
+  function setupContextMenu(imgEl, imageUrl, fileName) {
+    const menu = document.createElement('div');
+    menu.className = 'context-menu';
+    document.body.appendChild(menu);
+
+    imgEl.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      menu.innerHTML = '';
+      // 메뉴 항목들
+      ['이미지 다운로드','공유 링크 복사','원하는 형식으로 다운로드'].forEach(text => {
+        const item = document.createElement('div');
+        item.className = 'context-menu-item';
+        item.textContent = text;
+        item.addEventListener('click', ev => {
+          ev.stopPropagation();
+          if (text === '이미지 다운로드') {
+            downloadImage(imageUrl, fileName);
+          } else if (text === '공유 링크 복사') {
+            navigator.clipboard.writeText(window.location.href);
+          } else {
+            showFormatDropdown(e.pageX, e.pageY, imgEl, fileName);
+          }
+          hideMenu();
+        });
+        menu.appendChild(item);
+      });
+      menu.style.top = `${e.pageY}px`;
+      menu.style.left = `${e.pageX}px`;
+      menu.style.display = 'block';
+    });
+
+    document.addEventListener('click', hideMenu);
+    function hideMenu() {
+      menu.style.display = 'none';
+      document.querySelectorAll('#formatDropdown').forEach(d => d.remove());
+    }
+  }
+
+  function downloadImage(url, filename) {
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  // 형식 선택 드롭다운
+  function showFormatDropdown(x, y, imgEl, originalName) {
+    document.querySelectorAll('#formatDropdown').forEach(d => d.remove());
+    const dropdown = document.createElement('div');
+    dropdown.id = 'formatDropdown';
+    dropdown.className = 'format-dropdown';
+    dropdown.style.top = `${y}px`;
+    dropdown.style.left = `${x}px`;
+    ['png','jpeg','webp'].forEach(fmt => {
+      const it = document.createElement('div');
+      it.className = 'format-item';
+      it.textContent = fmt.toUpperCase();
+      it.addEventListener('click', e => {
+        e.stopPropagation();
+        convertAndDownload(imgEl, fmt, originalName);
+        dropdown.remove();
+      });
+      dropdown.appendChild(it);
+    });
+    document.body.appendChild(dropdown);
+  }
+
+  function convertAndDownload(img, format, originalName) {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      const base = originalName.replace(/\.[^.]+$/, '');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${base}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }, `image/${format}`);
+  }
+  </script>
 </body>
 </html>
