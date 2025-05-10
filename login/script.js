@@ -4,7 +4,7 @@ const nickMsg = document.getElementById("nick-msg");
 const pwMsg = document.getElementById("pw-msg");
 const submitBtn = document.getElementById("submit-btn");
 
-const existingNicknames = ["고양이", "guest123", "admin", "pikachu", "hello123"];
+const existingNicknames = ["S따","S다", "다원", "준우", "성배", "이성배", "김미언", "미언","성배",  "eeda", "junu","rlaal", "sb","고양이", "guest123", "admin", "pikachu", "hello123"];
 const funnyNames = ["멍때리기장인", "라면은물조절", "꿀잠러", "말이되는소리", "포켓몬조련사"];
 
 nicknameInput.addEventListener("input", validate);
@@ -88,6 +88,8 @@ function validate() {
   const taboo = [
     { word: "예쁜", message: "😏 당신은 예쁘지 않습니다 ㅋ" },
     { word: "예뻐", message: "😏 당신은 예쁘지 않습니다 ㅋ" },
+    { word: "귀여운", message: "😏 당신은 1도 귀엽지 않습니다 ㅋ" },
+    { word: "귀요미", message: "😏 당신은 기요미 아닙니다 ㅋ" },
     //{ word: "예뻐", message: "자기애가 넘치시네요. 하지만 시스템은 속지 않아요!" },
     { word: "잘생김", message: "그렇게 잘생기셨다구요? 글쎄요... 😏" },
     { word: "관리자", message: "관리자는 아무나 되는 게 아니에요~" },
@@ -121,9 +123,9 @@ function validate() {
   } else {
     nickMsg.textContent = "";
   }
-
+//!Ab1
   const errors = [];
-  if (password.length < 8) errors.push("짧아요… 너무 짧아서 마음이 아파요 😢");//너무 짧아요 (8자 이상)
+  if (password.length < 5) errors.push("짧아요… 너무 짧아서 마음이 아파요 😢");//너무 짧아요 (8자 이상)
   if (!/[A-Z]/.test(password)) errors.push("대문자가 없어요. 혹시 CAPS LOCK 고장났나요?");//대문자 1개는 넣어줘야죠
   if (!/[a-z]/.test(password)) errors.push("소문자도 있어야 합니다~");//소문자도 있어야 합니다~
   if (!/[0-9]/.test(password)) errors.push("숫자도 친구예요. 얘도 넣어줘요");//숫자도 하나쯤?
@@ -131,6 +133,9 @@ function validate() {
   if (/[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(password)) errors.push("한글은 비밀번호로 쓰기엔 너무 아름다워요. 안 돼요 💔");//한글은 비밀번호로 쓰면 안돼요 😅
   if (["password", "12345678", "qwerty"].some(p => password.toLowerCase().includes(p))) {
     errors.push("이건 너무 흔한 비밀번호 아닌가요?");//이건 너무 흔한 비밀번호 아닌가요?
+  }
+  if (password.length >= 4) {
+     errors.push("길어요… 너무 길어서 가슴이 찢어져요 😢");
   }
 
   if (errors.length > 0) {
