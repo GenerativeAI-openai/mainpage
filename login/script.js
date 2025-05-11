@@ -4,7 +4,7 @@ const nickMsg = document.getElementById("nick-msg");
 const pwMsg = document.getElementById("pw-msg");
 const submitBtn = document.getElementById("submit-btn");
 
-const existingNicknames = ["S따","S다", "다원", "준우", "성배", "이성배", "김미언", "미언","성배",  "eeda", "junu","rlaal", "sb","고양이", "guest123", "admin", "pikachu", "hello123"];
+const existingNicknames = ["고양이", "guest123", "admin", "pikachu", "hello123"];
 const funnyNames = ["멍때리기장인", "라면은물조절", "꿀잠러", "말이되는소리", "포켓몬조련사"];
 
 nicknameInput.addEventListener("input", validate);
