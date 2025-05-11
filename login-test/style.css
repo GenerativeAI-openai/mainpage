@@ -1,0 +1,77 @@
+body {
+  font-family: 'Nanum Gothic', sans-serif;
+  background-color: #f5f6f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#password {
+  -webkit-text-security: disc;
+}
+
+
+.container {
+  width: 360px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 22px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  background-color: #03c75a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.msg {
+  font-size: 13px;
+  margin-top: 5px;
+  color: red;
+}
+
+.note {
+  font-size: 12px;
+  color: gray;
+  text-align: center;
+  margin-top: 20px;
+}
