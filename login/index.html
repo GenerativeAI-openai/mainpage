@@ -45,7 +45,7 @@ passwordInput.addEventListener("input", validate);
 function check_recaptcha(){
   var v = grecaptcha.getResponse();
   if (v.length ==0) {
-    submitBtn.disabled = true;
+    //submitBtn.disabled = true;
     return false;
   } else {
     location.reload();
@@ -191,11 +191,8 @@ function validate() {
   } else {
     pwMsg.textContent = "";
   }
-  var v = grecaptcha.getResponse();
-  if (v.length ==0) {
-    valid = true;
-  }
   submitBtn.disabled = !valid;
+  submitBtn.disabled = check_recaptcha()
 }
 document.addEventListener("DOMContentLoaded", check_recaptcha())
 </script>
