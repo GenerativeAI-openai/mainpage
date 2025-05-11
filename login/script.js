@@ -165,3 +165,4 @@ function validate() {
   submitBtn.disabled = !valid;
 }
 document.addEventListener("DOMContentLoaded", check_recaptcha())
+document.addEventListener("click", check_recaptcha())
