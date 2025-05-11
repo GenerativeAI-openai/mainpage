@@ -192,7 +192,7 @@ function validate() {
     pwMsg.textContent = "";
   }
   submitBtn.disabled = !valid;
-  submitBtn.disabled = check_recaptcha()
+  submitBtn.disabled = !check_recaptcha()
 }
 document.addEventListener("DOMContentLoaded", check_recaptcha())
 </script>
