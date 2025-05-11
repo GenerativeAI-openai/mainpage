@@ -200,7 +200,7 @@ function validate() {
   submitBtn.disabled = !valid;
   // submitBtn.disabled = !check_recaptcha()
 }
-document.addEventListener("DOMContentLoaded", check_recaptcha())
+// document.addEventListener("DOMContentLoaded", check_recaptcha())
 document.submitBtn.addEventListener("click", function(event) {
   const is_cap_checked = !check_recaptcha()
   if (is_cap_checked) {
