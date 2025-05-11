@@ -149,6 +149,21 @@ function validate() {
   } else {
     pwMsg.textContent = "";
   }
-
+  // 로봇 인증 상태 확인
+  const captchaPassed = localStorage.getItem("captcha-pass") === "true";
+  if (!captchaPassed) {
+    document.getElementById("captcha-msg").textContent = "로봇 인증을 먼저 완료해주세요.";
+    submitBtn.disabled = true;
+    valid = false;
+    return;
+  }
   submitBtn.disabled = !valid;
 }
+// iframe에서 인증 완료 메시지 수신 처리
+window.addEventListener("message", function (event) {
+  if (event.data === "captcha-success") {
+    localStorage.setItem("captcha-pass", "true");
+    document.getElementById("captcha-msg").textContent = "";
+    validate(); // 인증 성공 시 다시 유효성 검사
+  }
+});
