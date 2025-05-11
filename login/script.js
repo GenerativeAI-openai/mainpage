@@ -1,4 +1,4 @@
-const nicknameInput = document.getElementById("nickname");
+  const nicknameInput = document.getElementById("nickname");
 const passwordInput = document.getElementById("password");
 const nickMsg = document.getElementById("nick-msg");
 const pwMsg = document.getElementById("pw-msg");
@@ -125,7 +125,7 @@ function validate() {
   }
 //!Ab1
   const errors = [];
-  if (password.length < 5) errors.push("짧아요… 너무 짧아서 마음이 아파요 😢");//너무 짧아요 (8자 이상)
+  if (password.length < 4) errors.push("짧아요… 너무 짧아서 마음이 아파요 😢");//너무 짧아요 (8자 이상)
   if (!/[A-Z]/.test(password)) errors.push("대문자가 없어요. 혹시 CAPS LOCK 고장났나요?");//대문자 1개는 넣어줘야죠
   if (!/[a-z]/.test(password)) errors.push("소문자도 있어야 합니다~");//소문자도 있어야 합니다~
   if (!/[0-9]/.test(password)) errors.push("숫자도 친구예요. 얘도 넣어줘요");//숫자도 하나쯤?
@@ -134,7 +134,7 @@ function validate() {
   if (["password", "12345678", "qwerty"].some(p => password.toLowerCase().includes(p))) {
     errors.push("이건 너무 흔한 비밀번호 아닌가요?");//이건 너무 흔한 비밀번호 아닌가요?
   }
-  if (password.length >= 4) {
+  if (password.length > 4) {
      errors.push("길어요… 너무 길어서 가슴이 찢어져요 😢");
   }
 
