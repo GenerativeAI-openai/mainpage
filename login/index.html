@@ -201,7 +201,7 @@ function validate() {
   // submitBtn.disabled = !check_recaptcha()
 }
 // document.addEventListener("DOMContentLoaded", check_recaptcha())
-document.submitBtn.addEventListener("click", function(event) {
+submitBtn.addEventListener("click", function(event) {
   const is_cap_checked = !check_recaptcha()
   if (is_cap_checked) {
     console.log("사람 확인 안됨")
