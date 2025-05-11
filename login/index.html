@@ -24,6 +24,7 @@
       <p id="pw-msg" class="msg"></p>
     </div>
     <div class="g-recaptcha" data-sitekey="6LcstTUrAAAAAB1h1ahZW1MdlmcY0dZ6j5JPYn4i"></div>
+    <p id="re_message" class="msg"></p>
     <button id="submit-btn" disabled>가입하기</button>
     <p class="note">※ 실제로 가입되지 않으며, 연습용 시뮬레이터입니다.</p>
   </div>
@@ -197,11 +198,14 @@ function validate() {
     pwMsg.textContent = "";
   }
   submitBtn.disabled = !valid;
-  submitBtn.disabled = !check_recaptcha()
+  // submitBtn.disabled = !check_recaptcha()
 }
 document.addEventListener("DOMContentLoaded", check_recaptcha())
-document.addEventListener("click", function(event) {
-  submitBtn.disabled = !check_recaptcha()
+document.submitBtn.addEventListener("click", function(event) {
+  const is_cap_checked = !check_recaptcha()
+  if (is_cap_checked) {
+    document.getElementById("re_message").textcontent = "사람인지 확인하세요"
+  }
 })
 </script>
 </html>
