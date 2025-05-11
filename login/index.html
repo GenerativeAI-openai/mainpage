@@ -195,6 +195,8 @@ function validate() {
   submitBtn.disabled = !check_recaptcha()
 }
 document.addEventListener("DOMContentLoaded", check_recaptcha())
-document.addEventListener("click", submitBtn.disabled = !check_recaptcha())
+document.addEventListener("click", function(event) {
+  submitBtn.disabled = !check_recaptcha()
+})
 </script>
 </html>
