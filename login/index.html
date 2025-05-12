@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>회원가입 <b>시뮬레이터</b>b></h1>
+    <h1>회원가입 <b>시뮬레이터</b></h1>
     <div class="input-group">
       <label for="nickname">닉네임</label>
       <input type="text" id="nickname" placeholder="닉네임 입력" />
@@ -39,8 +39,8 @@ const pwMsg = document.getElementById("pw-msg");
 const submitBtn = document.getElementById("submit-btn");
 
 const existingNicknames = ["고양이", "guest123", "admin", "pikachu", "hello123"];
-const funnyNames = ["멍때리기장인", "라면은물조절", "꿀잠러", "말이되는소리", "포켓몬조련사"];
-
+const funnyNames = ["닉네임", "멍때리기장인", "꿀잠러", "말이되는소리", "민준", "민준", "도윤", "예준", "하준", "시우", "지호", "주원, "지후", "도현, "준우, "준서", "건우", "우진", "현우", "선우", "지훈", "은우", "유준", "연우", "이준", "서진"., "시윤", "민재", "현준", "서윤", "서연", "지우", "하윤", "서현", "하은", "민서", "지유", "윤서", "지아", "채원", "수아", "서아", "지민", "지윤", "다은", "지안", "지안", "은서", "하린", "소율", "예은", "예린", "수빈", "소윤", "유나"];
+// https://baby-name.kr/%EC%9D%B4%EB%A6%84%EC%88%9C%EC%9C%84/1/
 nicknameInput.addEventListener("input", validate);
 passwordInput.addEventListener("input", validate);
 function check_recaptcha(){
@@ -144,6 +144,31 @@ function validate() {
     { word: "멋있는", message: "당신이 멋지다고 생각하시나요? ㅋ"},
     { word: "관리자", message: "관리자는 아무나 되는 게 아니에요~" },
     { word: "admin", message: "admin? 꿈도 꾸지 마세요." },
+    { word: "어드민
+function similarity(a, b) {
+  const longer = a.length > b.length ? a : b;
+  const shorter = a.length > b.length ? b : a;
+  const distance = getLevenshteinDistance(longer.toLowerCase(), shorter.toLowerCase());
+  return (1 - distance / longer.length);
+}
+
+function validate() {
+  const nickname = nicknameInput.value.trim();
+  const password = passwordInput.value;
+  let valid = true;
+
+  const taboo = [
+    { word: "예쁜", message: "😏 당신은 예쁘지 않습니다 ㅋ" },
+    { word: "예뻐", message: "😏 당신은 예쁘지 않습니다 ㅋ" },
+    { word: "귀여운", message: "😏 당신은 1도 귀엽지 않습니다 ㅋ" },
+    { word: "귀요미", message: "😏 당신은 귀요미 아닙니다 ㅋ" },
+    //{ word: "예뻐", message: "자기애가 넘치시네요. 하지만 시스템은 속지 않아요!" },
+    { word: "잘생김", message: "그렇게 잘생기셨다구요? 글쎄요... 😏" },
+    { word: "멋진", message: "당신이 멋지다고 생각하시나요? ㅋ"},
+    { word: "멋있는", message: "당신이 멋지다고 생각하시나요? ㅋ"},
+    { word: "관리자", message: "관리자는 아무나 되는 게 아니에요~" },
+    { word: "admin", message: "admin? 꿈도 꾸지 마세요." },
+    { word: "어드민", message: "어드민? 꿈도 꾸지 마세요." },
     // { word: "ㅂㅅ", message: "입 좀 조심해주세요. 저희는 착한 사이트입니다" },
     // { word: "fuck", message: "그런 단어는 NO! 😡" },
     // { word: "sh1t", message: "그건 안돼요... 👀" }
