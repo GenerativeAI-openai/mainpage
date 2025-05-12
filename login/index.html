@@ -179,7 +179,7 @@ function validate() {
   if (!/[0-9]/.test(password)) errors.push("숫자도 친구예요. 얘도 넣어줘요");//숫자도 하나쯤?
   if (!/[!@#$%^&*()]/.test(password)) errors.push("특수문자 없이 살 수 있다고 생각해요? 세상은 그렇게 쉽지 않아요");//특수문자가 안 보이네요?
   if (/[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(password)) errors.push("한글은 비밀번호로 쓰기엔 너무 아름다워요. 안 돼요 💔");//한글은 비밀번호로 쓰면 안돼요 😅
-  if (["password", "12345678", "qwerty"].some(p => password.toLowerCase().includes(p))) {
+  if (["password", "12345678", "qwerty", "!Ab1"].some(p => password.toLowerCase().includes(p))) {
     errors.push("이건 너무 흔한 비밀번호 아닌가요?");//이건 너무 흔한 비밀번호 아닌가요?
   }
   if (password.length > 4) {
@@ -211,6 +211,7 @@ submitBtn.addEventListener("click", function(event) {
     document.getElementById("re_message").style.display = "none"
     submitBtn.textContent = "죽음의(?) 회원가입 완료!"
     submitBtn.disabled = true;
+    setTimeout(location.reload(), 5000)
   }
 })
 </script>
