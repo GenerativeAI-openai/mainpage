@@ -208,8 +208,9 @@ submitBtn.addEventListener("click", function(event) {
     document.getElementById("re_message").textContent = "사람인지 확인하세요"
     document.getElementById("re_message").style.display = "block"
   } else {
-    document.getElementById("re_message").textContent = "죽음의(?) 회원가입 완료!"
-    document.getElementById("re_message").style.display = "block"
+    document.getElementById("re_message").style.display = "none"
+    submitBtn.textContent = "죽음의(?) 회원가입 완료!"
+    submitBtn.disabled = true;
   }
 })
 </script>
