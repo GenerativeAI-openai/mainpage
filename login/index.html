@@ -121,12 +121,6 @@ function getLevenshteinDistance(a, b) {
   return matrix[b.length][a.length];
 }
 
-function similarity(a, b) {
-  const longer = a.length > b.length ? a : b;
-  const shorter = a.length > b.length ? b : a;
-  const distance = getLevenshteinDistance(longer.toLowerCase(), shorter.toLowerCase());
-  return (1 - distance / longer.length);
-}
 
 function validate() {
   const nickname = nicknameInput.value.trim();
