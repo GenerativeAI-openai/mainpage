@@ -205,10 +205,10 @@ submitBtn.addEventListener("click", function(event) {
   const is_cap_checked = !check_recaptcha()
   if (is_cap_checked) {
     console.log("사람 확인 안됨")
-    document.getElementById("re_message").textcontent = "사람인지 확인하세요"
+    document.getElementById("re_message").textContent = "사람인지 확인하세요"
     document.getElementById("re_message").style.display = "block"
   } else {
-    document.getElementById("re_message").textcontent = "죽음의 회원가입 완료!"
+    document.getElementById("re_message").textContent = "죽음의(?) 회원가입 완료!"
     document.getElementById("re_message").style.display = "block"
   }
 })
