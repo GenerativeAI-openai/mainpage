@@ -121,25 +121,6 @@ function getLevenshteinDistance(a, b) {
   return matrix[b.length][a.length];
 }
 
-
-function validate() {
-  const nickname = nicknameInput.value.trim();
-  const password = passwordInput.value;
-  let valid = true;
-
-  const taboo = [
-    { word: "예쁜", message: "😏 당신은 예쁘지 않습니다 ㅋ" },
-    { word: "예뻐", message: "😏 당신은 예쁘지 않습니다 ㅋ" },
-    { word: "귀여운", message: "😏 당신은 1도 귀엽지 않습니다 ㅋ" },
-    { word: "귀요미", message: "😏 당신은 귀요미 아닙니다 ㅋ" },
-    //{ word: "예뻐", message: "자기애가 넘치시네요. 하지만 시스템은 속지 않아요!" },
-    { word: "잘생김", message: "그렇게 잘생기셨다구요? 글쎄요... 😏" },
-    { word: "멋진", message: "당신이 멋지다고 생각하시나요? ㅋ"},
-    { word: "멋있는", message: "당신이 멋지다고 생각하시나요? ㅋ"},
-    { word: "관리자", message: "관리자는 아무나 되는 게 아니에요~" },
-    { word: "admin", message: "admin? 꿈도 꾸지 마세요." },
-    { word: "어드민", message: "어드민? 꿈도 꾸지 마세요." },
-  ]
 function similarity(a, b) {
   const longer = a.length > b.length ? a : b;
   const shorter = a.length > b.length ? b : a;
