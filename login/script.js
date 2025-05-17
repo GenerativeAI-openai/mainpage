@@ -9,7 +9,16 @@ const funnyNames = ["멍때리기장인", "라면은물조절", "꿀잠러", "�
 
 nicknameInput.addEventListener("input", validate);
 passwordInput.addEventListener("input", validate);
-
+function check_recaptcha(){
+  var v = grecaptcha.getResponse();
+  if (v.length ==0) {
+    submitBtn.disabled = true;
+    return false;
+  } else {
+    location.reload();
+    return true;
+  }
+}
 function suggestNickname() {
   const random = funnyNames[Math.floor(Math.random() * funnyNames.length)];
   nicknameInput.value = random;
@@ -149,6 +158,11 @@ function validate() {
   } else {
     pwMsg.textContent = "";
   }
-
+  var v = grecaptcha.getResponse();
+  if (v.length ==0) {
+    valid = true;
+  }
   submitBtn.disabled = !valid;
 }
+document.addEventListener("DOMContentLoaded", check_recaptcha())
+document.addEventListener("click", check_recaptcha())
