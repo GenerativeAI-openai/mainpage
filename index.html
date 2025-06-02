@@ -70,12 +70,13 @@
       <!-- 사이트 리스트가 여기에 동적으로 추가됩니다 -->
     </ul>
    <br>
-    <footer>최종 업데이트: 프로필 아이콘 추가 [ 2025-04-27 ]</footer>
+    <footer>초등생용 위키, 꿈나무위키 추가 [ 2025-06-02 ]</footer>
   </div>
 
   <script>
     // 보유 중인 사이트 목록
     const sites = [
+      { name: "꿈나무위키", url: "https://wiki.kkomaweb.com/" },
       { name: "파일 용량 줄이기", url: "https://kkomaweb.com/filecompression" },
       { name: "Video FPS Splitter", url: "https://kkomaweb.com/fpsvideodivide" },
       { name: "엔트리 태그 검색", url: "http://kkomaweb.com/entryprojectsearch" },
@@ -85,7 +86,7 @@
       //{ name: "폼 작성", url: "http://my-form.o-r.kr/" },
       //{ name: "국제질병분류(ICD)질병 모음", url: "http://icd.o-r.kr/" },
       { name: "파일 확장자 변환", url: "https://kkomaweb.com/extension-change/" },
-      { name: "회원가입 시뮬레이션", url: "https://kkomaweb.com/login/" },
+      // { name: "회원가입 시뮬레이션", url: "https://kkomaweb.com/login/" },
     ];
 
     const siteList = document.getElementById('siteList');
@@ -97,6 +98,9 @@
       link.href = site.url;
       link.textContent = site.name;
       link.target = '_blank'; // 새 창에서 열기
+      if (site.name == "꿈나무위키") {
+        site.innerHTML = `<br><br><br><a href="https://kkomaweb.com/login/" target="_blank" style="width: 600px;height: 100px;font-size: -webkit-xxx-large;"><strong>꿈나무위키</strong></a>`
+      }
       listItem.appendChild(link);
       siteList.appendChild(listItem);
     });
