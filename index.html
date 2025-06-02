@@ -88,10 +88,11 @@
       { name: "파일 확장자 변환", url: "https://kkomaweb.com/extension-change/" },
       // { name: "회원가입 시뮬레이션", url: "https://kkomaweb.com/login/" },
     ];
-    const wikiitem = document.createElement('li');
-    listItem.innerHTML = `<br><br><br><a href="https://wiki.kkomaweb.com/" target="_blank" style="width: 600px;height: 100px;font-size: -webkit-xxx-large;"><strong>꿈나무위키</strong></a>`
-    siteList.appendChild(listItem);
+    const wikiItem = document.createElement('li');
+    wikiItem.innerHTML = `<br><br><br><a href="https://wiki.kkomaweb.com/" target="_blank" style="width: 600px;height: 100px;font-size: -webkit-xxx-large;"><strong>꿈나무위키</strong></a>`
+    siteList.appendChild(wikiItem);
     const siteList = document.getElementById('siteList');
+    siteList.appendChild(wikiItem);
     sites.forEach(site => {
       const listItem = document.createElement('li');
       const link = document.createElement('a');
