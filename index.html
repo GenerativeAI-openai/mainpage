@@ -74,9 +74,9 @@
   </div>
 
   <script>
+   //   { name: "꿈나무위키", url: "https://wiki.kkomaweb.com/" },
     // 보유 중인 사이트 목록
     const sites = [
-      { name: "꿈나무위키", url: "https://wiki.kkomaweb.com/" },
       { name: "파일 용량 줄이기", url: "https://kkomaweb.com/filecompression" },
       { name: "Video FPS Splitter", url: "https://kkomaweb.com/fpsvideodivide" },
       { name: "엔트리 태그 검색", url: "http://kkomaweb.com/entryprojectsearch" },
@@ -88,22 +88,17 @@
       { name: "파일 확장자 변환", url: "https://kkomaweb.com/extension-change/" },
       // { name: "회원가입 시뮬레이션", url: "https://kkomaweb.com/login/" },
     ];
-
+    const wikiitem = document.createElement('li');
+    listItem.innerHTML = `<br><br><br><a href="https://wiki.kkomaweb.com/" target="_blank" style="width: 600px;height: 100px;font-size: -webkit-xxx-large;"><strong>꿈나무위키</strong></a>`
+    siteList.appendChild(listItem);
     const siteList = document.getElementById('siteList');
     sites.forEach(site => {
       const listItem = document.createElement('li');
-      if (site.name != "꿈나무위키") {
-        const link = document.createElement('a');
-        link.href = site.url;
-        link.textContent = site.name;
-        link.target = '_blank';
-      }
-      if (site.name == "꿈나무위키") {
-        listItem.innerHTML = `<br><br><br><a href="https://kkomaweb.com/login/" target="_blank" style="width: 600px;height: 100px;font-size: -webkit-xxx-large;"><strong>꿈나무위키</strong></a>`
-      }
-      if (site.name != "꿈나무위키") {
-        listItem.appendChild(link);
-      }
+      const link = document.createElement('a');
+      link.href = site.url;
+      link.textContent = site.name;
+      link.target = '_blank';
+      listItem.appendChild(link);
       siteList.appendChild(listItem);
     });
   </script>
