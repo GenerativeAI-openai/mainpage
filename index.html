@@ -5,10 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>꼬꼬마 웹 - Main</title>
 
-<link rel="icon" href="https://img.bloupla.net/profile-img?raw=1" type="image/png">
+<link rel="icon" href="https://playentry.org/uploads/d3/c1/d3c110b4ma9imlt80006a2c94373oyaj.png" type="image/png">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 <style>
+/* ==================== 팝업 공지 스타일 ==================== */
+.notice-popup {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  display:flex; justify-content:center; align-items:flex-start;
+  padding-top:120px;
+  backdrop-filter:blur(6px);
+  background:rgba(0,0,0,0.45);
+  z-index:5000; opacity:0; pointer-events:none;
+  transition:opacity .45s ease;
+}
+.notice-popup.show { opacity:1; pointer-events:auto; }
+.notice-popup.hide { opacity:0; pointer-events:none; }
+
+.notice-box {
+  width:350px; background:white; border-radius:18px;
+  padding:28px 22px; text-align:center;
+  animation:popupFade .45s ease;
+  box-shadow:0 12px 38px rgba(0,0,0,0.30);
+}
+.notice-icon { font-size:42px; margin-bottom:10px; }
+.notice-title { font-size:22px; font-weight:800; margin-bottom:8px; }
+.notice-msg { font-size:15px; color:#333; line-height:1.45; margin-bottom:22px; }
+
+.notice-btn-wrap { display:flex; justify-content:center; gap:10px; margin-top:10px; }
+.notice-btn {
+  padding:9px 18px; border-radius:22px; border:none; cursor:pointer;
+  font-size:14px; font-weight:700; transition:.3s;
+}
+
+.btn-close { background:#e0e0e0; }
+.btn-close:hover { background:#bdbdbd; }
+
+.btn-today { background:#4CAF50; color:white; }
+.btn-today:hover { background:#2e7d32; transform:translateY(-1px); }
+
+/* 타입 테마 */
+.notice-box.info { border-top:6px solid #4CAF50; }
+.notice-box.warning { border-top:6px solid #ff9800; }
+.notice-box.danger { border-top:6px solid #e53935; }
+
+@keyframes popupFade {
+  from { transform:translateY(25px); opacity:0; }
+  to { transform:translateY(0); opacity:1; }
+}
+/* ==================== 팝업 스타일 종료 ==================== */
+
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:"Pretendard", Arial; background:#f5f7fb; overflow-x:hidden; scroll-behavior:smooth; }
 
@@ -60,7 +106,7 @@ header img { width:50px; border-radius:50%; cursor:pointer; }
 .icon-card.show { opacity:1; }
 .icon-card:hover { box-shadow:0 14px 32px rgba(0,255,120,0.4); }
 
-/* HERO ICON IMG */
+/* ICON IMG */
 .hero .icon-card img {
   width:70px; height:70px; margin-bottom:10px;
 }
@@ -104,11 +150,11 @@ header img { width:50px; border-radius:50%; cursor:pointer; }
   border-radius:10px;
 }
 
-/* LINK STYLE */
+/* LINK */
 .site-link { text-decoration:none; color:#4CAF50; font-weight:700; transition:.3s; }
 .site-link:hover { color:#2e7d32; }
 
-/* EXTENSION SECTION */
+/* EXTENSIONS */
 .extension-section {
   max-width:1000px; margin:60px auto; padding:0 20px;
   display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;
@@ -128,8 +174,21 @@ footer { margin-top:80px; padding:18px; background:#111; color:#eee; text-align:
 
 <body>
 
+<!-- ==================== 팝업 HTML ==================== -->
+<div id="noticePopup" class="notice-popup" style="display:none;">
+  <div id="noticeBox" class="notice-box info">
+    <div id="noticeIcon" class="notice-icon">🛈</div>
+    <div id="noticeTitle" class="notice-title">알림</div>
+    <div id="noticeMessage" class="notice-msg">공지 내용</div>
+    <div class="notice-btn-wrap">
+      <button id="btnClose" class="notice-btn btn-close">닫기</button>
+      <button id="btnToday" class="notice-btn btn-today">오늘 하루 보지 않기</button>
+    </div>
+  </div>
+</div>
+
 <header>
-  <img src="https://img.bloupla.net/profile-img?raw=1"
+  <img src="https://playentry.org/uploads/d3/c1/d3c110b4ma9imlt80006a2c94373oyaj.png"
        onclick="location.href='https://playentry.org/profile/6583d1984a600d00255e78bc/project';">
   <nav>
     <ul>
@@ -167,11 +226,9 @@ footer { margin-top:80px; padding:18px; background:#111; color:#eee; text-align:
   <h3 class="hero-subtitle">강력하고 유용한 기능들</h3>
 </section>
 
-<!-- UPDATE -->
 <h2 class="section-title" id="updates">업데이트 내역</h2>
 <div class="update-timeline" id="updateList"></div>
 
-<!-- SITE LIST -->
 <h2 class="section-title" id="sites">서비스 목록</h2>
 <div class="tab-menu">
   <button class="tab-button active" data-category="all">전체</button>
@@ -181,7 +238,6 @@ footer { margin-top:80px; padding:18px; background:#111; color:#eee; text-align:
 </div>
 <div class="site-list" id="siteList"></div>
 
-<!-- EXTENSIONS -->
 <h2 class="section-title" id="extensions">대표 확장 프로그램</h2>
 <div class="extension-section">
   <div class="extension-card">
@@ -206,7 +262,7 @@ footer { margin-top:80px; padding:18px; background:#111; color:#eee; text-align:
   </div>
 </div>
 
-
+<footer>© 2025 KkomaWeb All Rights Reserved.</footer>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>AOS.init({duration:800, once:true});</script>
@@ -218,7 +274,6 @@ const updates=[
   "[2025-11-17] 꼬꼬마 웹 메인페이지 UI 대폭 개편",
   "[2025-10-19] 영어 플래시 카드 사이트 추가",
   "[2025-10-11] Video FPS Splitter UI 개선",
-  // "[2025-09-30] 파일 확장자 변환 UI 개선"
 ];
 updates.forEach(text=>{
   const div=document.createElement("div");
@@ -245,9 +300,9 @@ function renderSites(category="all"){
     document.getElementById("siteList").innerHTML+=`
       <div class="site-card">
         <img class="site-logo" src="${site.icon}">
-        <div class="site-info">
-          <span class="site-name"><b>${site.name}</b></span>
-          <span class="site-desc">${site.desc}</span>
+        <div class="site-infos">
+          <span class="site-name"><b>${site.name}</b></span><br>
+          <span class="site-desc">${site.desc}</span><br>
           <a class="site-link" href="${site.url}" target="_blank">바로가기</a>
         </div>
       </div>`;
@@ -271,7 +326,7 @@ document.querySelectorAll(".nav-btn").forEach(btn=>{
   });
 });
 
-/* HERO ICONS FADE IN */
+/* HERO ICONS SHOW */
 window.addEventListener("load",()=>{
   setTimeout(()=>{
     document.querySelector(".hero-icons").classList.add("show");
@@ -279,7 +334,7 @@ window.addEventListener("load",()=>{
   },300);
 });
 
-/* ICON CLICK → scroll to site list */
+/* ICON CLICK */
 document.querySelectorAll(".icon-card").forEach(card=>{
   card.addEventListener("click",()=>{
     const cat=card.dataset.category;
@@ -291,13 +346,61 @@ document.querySelectorAll(".icon-card").forEach(card=>{
   });
 });
 
-/* TILT EFFECT */
+/* TILT */
 const tiltCards=document.querySelectorAll(".tilt");
 document.addEventListener("mousemove",e=>{
   const x=(window.innerWidth/2-e.clientX)/40;
   const y=(window.innerHeight/2-e.clientY)/40;
   tiltCards.forEach(card=>card.style.transform=`rotateX(${y}deg) rotateY(${-x}deg)`);
 });
+
+/* ================= 팝업 JS ================= */
+function openNotice(message, type="info"){
+  const popup=document.getElementById("noticePopup");
+  const box=document.getElementById("noticeBox");
+  const icon=document.getElementById("noticeIcon");
+  const title=document.getElementById("noticeTitle");
+  const msg=document.getElementById("noticeMessage");
+
+  const types={
+    info:{ icon:"🛈", title:"알림" },
+    warning:{ icon:"⚠", title:"주의" },
+    danger:{ icon:"❗", title:"경고" }
+  };
+
+  msg.innerHTML=message;
+  icon.innerHTML=types[type].icon;
+  title.innerHTML=types[type].title;
+  box.className="notice-box " + type;
+
+  popup.style.display="flex";
+  setTimeout(()=>popup.classList.add("show"),10);
+}
+
+/* 닫기 버튼 */
+document.getElementById("btnClose").addEventListener("click",()=>{
+  const popup=document.getElementById("noticePopup");
+  popup.classList.remove("show");
+  popup.classList.add("hide");
+  setTimeout(()=>popup.style.display="none",350);
+});
+
+/* 오늘 하루 보지 않기 */
+document.getElementById("btnToday").addEventListener("click",()=>{
+  localStorage.setItem("hideToday", new Date().toDateString());
+  const popup=document.getElementById("noticePopup");
+  popup.classList.remove("show");
+  popup.classList.add("hide");
+  setTimeout(()=>popup.style.display="none",350);
+});
+
+/* 페이지 로드 후 자동 표시 */
+window.addEventListener("load",()=>{
+  if(localStorage.getItem("hideToday") !== new Date().toDateString()){
+    setTimeout(()=>openNotice("현재 cloudflare 문제로 외부 이미지가<br>불러와지지 않을 수 있습니다.","warning"),600);
+  }
+});
+
 </script>
 
 </body>
